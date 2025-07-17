@@ -13,11 +13,11 @@ import traceback
 
 
 app = Flask(__name__, static_folder='static')
-app.secret_key = 'supersecretkey'  # Change this in production
+app.secret_key = 'supersecretkey'  
 
 
-MINDEE_API_KEY = "mk_QJ1dH4ED91fMhBBQEWvam5DwzzsyL0yK"
-MINDEE_MODEL_ID = "0871c8a8-1b5a-4dd4-918c-17633f1b3aea"
+MINDEE_API_KEY = "API KEY"
+MINDEE_MODEL_ID = "HI_BUDDY"
 DATABASE = 'receipts.db'
 
 def get_db():
