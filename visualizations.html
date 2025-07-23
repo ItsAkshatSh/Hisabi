@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hisabi - Spending Visualizations</title>
+    <meta name="description" content="Visualize your spending patterns from receipt data" />
+    <meta name="author" content="Hisabi" />
+
+    <meta property="og:title" content="Hisabi - Spending Visualizations" />
+    <meta property="og:description" content="Visualize your spending patterns from receipt data" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@hisabi_app" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body>
+    <!-- Background Shapes -->
+    <div class="background-shapes">
+      <div class="floating-shape shape-1"></div>
+      <div class="floating-shape shape-2"></div>
+      <div class="floating-shape shape-3"></div>
+      <div class="floating-shape shape-4"></div>
+      <div class="floating-particles">
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+      </div>
+    </div>
+
+    <div class="fixed-header">
+      <button id="menuBtn" class="menu-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <nav class="main-nav">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/visualizations.html" class="nav-link active">Visualizations</a>
+      </nav>
+    </div>
+
+    <div class="container" id="mainContent">
+      <header class="header animate-fade-in">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path>
+              <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+              <path d="M12 18V6"></path>
+            </svg>
+          </div>
+          <h1 class="logo-text">Hisabi</h1>
+        </div>
+        
+        <p class="subtitle">
+          Visualize your spending patterns
+        </p>
+      </header>
+
+      <section class="visualizations-section animate-scale-in">
+        <div class="chart-controls">
+          <div class="control-group">
+            <label for="timeRange">Time Range:</label>
+            <select id="timeRange">
+              <option value="all">All Time</option>
+              <option value="month">This Month</option>
+              <option value="quarter">Last 3 Months</option>
+              <option value="year">This Year</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="chartType">Chart Type:</label>
+            <select id="chartType">
+              <option value="pie">Pie Chart</option>
+              <option value="bar">Bar Chart</option>
+              <option value="line">Line Chart (Over Time)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="viz-container">
+          <div class="viz-card">
+            <h3 class="viz-title">Spending by Category</h3>
+            <div class="chart-container">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="viz-card">
+            <h3 class="viz-title">Top Stores</h3>
+            <div class="chart-container">
+              <canvas id="storeChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="viz-container">
+          <div class="viz-card full-width">
+            <h3 class="viz-title">Spending Over Time</h3>
+            <div class="chart-container">
+              <canvas id="timeChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="viz-container">
+          <div class="summary-container">
+            <h2>Spending Summary</h2>
+            <div class="summary-stats">
+              <div class="stat-item" id="totalSpending">
+                <div class="stat-label">Total Spending</div>
+                <div class="stat-value">$0.00</div>
+              </div>
+              <div class="stat-item" id="avgPerReceipt">
+                <div class="stat-label">Avg. per Receipt</div>
+                <div class="stat-value">$0.00</div>
+              </div>
+              <div class="stat-item" id="topCategory">
+                <div class="stat-label">Top Category</div>
+                <div class="stat-value top-category">None</div>
+              </div>
+              <div class="stat-item" id="receiptCount">
+                <div class="stat-label">Receipt Count</div>
+                <div class="stat-value">0</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="summary-container">
+            <h2>Top Expenses</h2>
+            <div class="expenses-list" id="topExpenses">
+              <div class="empty-state">
+                <p>No receipt data available</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path>
+        </svg>
+        <span>Navigation</span>
+      </div>
+      
+      <div class="sidebar-nav">
+        <a href="/" class="sidebar-nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          Home
+        </a>
+        <a href="/visualizations.html" class="sidebar-nav-item active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="21" x2="9" y2="9"></line>
+          </svg>
+          Visualizations
+        </a>
+      </div>
+      
+      <div class="currency-selector">
+        <label for="currencySelect">Currency</label>
+        <select id="currencySelect">
+          <option value="AED">AED</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+      
+      <div id="savedReceipts" class="saved-receipts">
+        <div class="sidebar-section-title">Recent Receipts</div>
+        <div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5">
+            <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path>
+          </svg>
+          <p>No receipts saved yet</p>
+          <small>Upload or create your first receipt</small>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+    <script src="visualizations.js"></script>
+  </body>
+</html>
